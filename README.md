@@ -20,14 +20,9 @@ paired outcomes that loop already produces and answers two questions online:
 
 It needs no change to the underlying algorithm and no extra model calls.
 
-```
- your self-evolving loop                       stops.Monitor
- ───────────────────────                       ─────────────
- propose θ'_t from θ_{t-1}
- evaluate θ_{t-1}, θ'_t on D_val  ──(b, c)──▶  X = c - b per item
- gate: keep θ'_t or θ_{t-1}                    restart wealth W_t^(s), M_t = max_s W_t^(s)
-                                   ◀─alarm──   M_t ≥ 1/δ  →  stop, return θ_{ν̂-1}
-```
+<p align="center">
+  <img src="assets/pipeline.png" alt="STOPS pipeline: a self-evolving loop feeds paired outcomes to the plug-and-play module, which decides when to stop and which artifact to return" width="100%">
+</p>
 
 ## Install
 
