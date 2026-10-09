@@ -1,0 +1,108 @@
+{
+  "_doc": [
+    "One entry per run used in the paper. 'run' is the directory name under SkillOpt/outputs or seas-cross-system/runs.",
+    "'expected' is what this code computes from traces/, cross-checked against the authors' original scripts (detect_all_verify.py, sensitivity_table.py, detect_gepa*.py). tests/test_regression.py enforces it.",
+    "'paper_reported' lists printed numbers in the current draft that differ from 'expected'. Remove once the paper is updated.",
+    "'test' names per-item unseen-test files in traces/test/. 'returned' is the artifact the stopping rule returns (theta_{nu_hat-1}); 'evaluated_as_returned' is used when the file on disk is a different artifact."
+  ],
+  "defaults": {"eps": 0.01, "delta": 0.05},
+  "cells": [
+    {"id": "skillopt_searchqa_deepseek", "system": "skillopt", "run": "searchqa_rqa_deepseek",
+     "benchmark": "SearchQA", "model": "DeepSeek V4 Flash", "tables": ["T1", "T2", "T3", "T5", "T6", "T7", "F1", "F5"],
+     "expected": {"agrapa": [4, 2], "mixture": [4, 2], "returned": "step_0001",
+                  "tokens_to_alarm_M": 2.18, "tokens_full_M": 25.85, "tokens_saved_pct": 91.6},
+     "test": {"baseline_acc": 77.21, "returned": "skillopt_searchqa_deepseek__step_0001", "full": "skillopt_searchqa_deepseek__slow_update_epoch_04"},
+     "paper_reported": {"mixture": [5, 2], "test_returned_acc": 82.43, "test_delta": 0.43, "test_ci": [-1.10, 1.96]}},
+
+    {"id": "skillopt_gsm8k_deepseek", "system": "skillopt", "run": "gsm8k_deepseek",
+     "benchmark": "GSM8K", "model": "DeepSeek V4 Flash", "tables": ["T1", "T2", "T4", "T5", "T6", "T7", "F5"],
+     "expected": {"agrapa": [4, 2], "mixture": [5, 2], "returned": "step_0001",
+                  "tokens_to_alarm_M": 1.21, "tokens_full_M": 11.86, "tokens_saved_pct": 89.8},
+     "test": {"baseline_acc": 84.00, "returned": "skillopt_gsm8k_deepseek__step_0001", "full": "skillopt_gsm8k_deepseek__full_run_best"}},
+
+    {"id": "skillopt_officeqa_deepseek", "system": "skillopt", "run": "officeqa_deepseek",
+     "benchmark": "OfficeQA", "model": "DeepSeek V4 Flash", "tables": ["T1", "T7", "F5"],
+     "expected": {"agrapa": [8, 5], "mixture": [8, 5], "returned": "step_0003",
+                  "tokens_to_alarm_M": 106.72, "tokens_full_M": 206.90, "tokens_saved_pct": 48.4,
+                  "flags_through_alarm": ["baseline_possibly_stale", "baseline_stale"]},
+     "test": {"baseline_acc": 14.53, "evaluated_as_returned": "skillopt_officeqa_deepseek__step_0003", "full": "skillopt_officeqa_deepseek__best_skill",
+              "note": "theta_4 is skills/skill_v0004.md (step_0003 plus slow-update guidance); no test file for it was found."},
+     "paper_reported": {"test_returned_acc": 32.56, "test_full_acc": 33.72, "test_delta": -1.16, "test_ci": [-8.72, 6.39]}},
+
+    {"id": "skillopt_livemath_deepseek", "system": "skillopt", "run": "livemath_deepseek_full",
+     "benchmark": "LiveMath", "model": "DeepSeek V4 Flash", "tables": ["T7", "F4"],
+     "expected": {"agrapa": [8, 2], "mixture": [null, null], "returned": "step_0001", "flags_through_alarm": ["baseline_stale"]}},
+
+    {"id": "skillopt_spreadsheet_deepseek", "system": "skillopt", "run": "spreadsheetbench_deepseek",
+     "benchmark": "SpreadsheetBench", "model": "DeepSeek V4 Flash", "tables": ["F3"],
+     "expected": {"agrapa": [null, null], "mixture": [null, null]}},
+
+    {"id": "skillopt_searchqa_qwen", "system": "skillopt", "run": "searchqa_rqa_v2",
+     "benchmark": "SearchQA", "model": "Qwen3-32B", "tables": ["T3", "T5"],
+     "expected": {"agrapa": [12, 9], "mixture": [15, 9], "returned": "step_0008",
+                  "tokens_to_alarm_M": 8.08, "tokens_full_M": 32.68, "tokens_saved_pct": 75.3},
+     "test": {"baseline_acc": 66.36, "returned": "skillopt_searchqa_qwen__step_0008", "full": "skillopt_searchqa_qwen__best_skill"},
+     "paper_reported": {"mixture": [12, 9]}},
+
+    {"id": "skillopt_searchqa_luna", "system": "skillopt", "run": "searchqa_luna_high3",
+     "benchmark": "SearchQA", "model": "GPT-5.6 Luna", "tables": ["T3", "T5"],
+     "expected": {"agrapa": [10, 8], "mixture": [10, 3], "returned": "step_0008", "alarm_step": 12,
+                  "tokens_to_alarm_M": 6.02, "tokens_full_M": 17.03, "tokens_saved_pct": 64.7},
+     "test": {"baseline_acc": 69.79, "returned": "skillopt_searchqa_luna__step_0008", "full": "skillopt_searchqa_luna__best_skill"},
+     "paper_reported": {"agrapa": [10, 3], "mixture": [11, 3], "tokens_to_alarm_M": 5.30, "tokens_saved_pct": 68.9}},
+
+    {"id": "skillopt_gsm8k_qwen", "system": "skillopt", "run": "gsm8k_qwen",
+     "benchmark": "GSM8K", "model": "Qwen3-32B", "tables": ["T4", "T5"],
+     "expected": {"agrapa": [8, 2], "mixture": [8, 2], "returned": "step_0001",
+                  "tokens_to_alarm_M": 2.79, "tokens_full_M": 18.04, "tokens_saved_pct": 84.5},
+     "test": {"baseline_acc": 78.80, "evaluated_as_returned": "skillopt_gsm8k_qwen__step_0005", "full": "skillopt_gsm8k_qwen__best_skill",
+              "note": "the returned artifact is step_0001; the file on disk is step_0005 (last accept before the alarm)."},
+     "paper_reported": {"mixture": [9, 2]}},
+
+    {"id": "skillopt_gsm8k_luna", "system": "skillopt", "run": "gsm8k_luna_high",
+     "benchmark": "GSM8K", "model": "GPT-5.6 Luna", "tables": ["T4", "T5"],
+     "expected": {"agrapa": [4, 2], "mixture": [4, 2], "returned": "step_0001",
+                  "tokens_to_alarm_M": 0.84, "tokens_full_M": 11.33, "tokens_saved_pct": 92.6},
+     "test": {"baseline_acc": 24.40, "returned": "skillopt_gsm8k_luna__step_0001", "full": "skillopt_gsm8k_luna__best_skill"},
+     "paper_reported": {"mixture": [5, 2]}},
+
+    {"id": "skillopt_searchqa_deepseek_val100", "system": "skillopt", "run": "searchqa_deepseek_val100",
+     "benchmark": "SearchQA", "model": "DeepSeek V4 Flash", "tables": ["T5", "T6"],
+     "expected": {"agrapa": [6, 4], "mixture": [7, 4], "returned": "step_0003",
+                  "tokens_to_alarm_M": 2.26, "tokens_full_M": 16.10, "tokens_saved_pct": 85.9},
+     "test": {"baseline_acc": 77.21, "returned": "skillopt_searchqa_deepseek_val100__step_0003", "full": "skillopt_searchqa_deepseek_val100__best_skill"},
+     "paper_reported": {"mixture": [10, 4]}},
+
+    {"id": "skillopt_gsm8k_deepseek_val100", "system": "skillopt", "run": "gsm8k_deepseek_val100",
+     "benchmark": "GSM8K", "model": "DeepSeek V4 Flash", "tables": ["T5", "T6"],
+     "expected": {"agrapa": [5, 2], "mixture": [7, 2], "returned": "step_0001",
+                  "tokens_to_alarm_M": 0.83, "tokens_full_M": 6.52, "tokens_saved_pct": 87.3},
+     "test": {"baseline_acc": 84.00, "returned": "skillopt_gsm8k_deepseek_val100__step_0001", "full": "skillopt_gsm8k_deepseek_val100__best_skill"},
+     "paper_reported": {"mixture": [8, 2]}},
+
+    {"id": "gepa_searchqa_deepseek", "system": "gepa", "run": "gepa_searchqa", "tokens_per_call": 2249,
+     "benchmark": "SearchQA", "model": "DeepSeek V4 Flash", "tables": ["T2", "T5"],
+     "expected": {"agrapa": [5, 2], "mixture": [5, 2], "returned": "cand_1",
+                  "tokens_to_alarm_M": 2.36, "tokens_full_M": 8.98, "tokens_saved_pct": 73.8},
+     "test": {"baseline_acc": 76.86, "returned": "gepa_searchqa_deepseek__cand_1", "full": "gepa_searchqa_deepseek__cand_10"},
+     "paper_reported": {"tokens_full_M": 8.99}},
+
+    {"id": "gepa_gsm8k_deepseek", "system": "gepa", "run": "gepa_gsm8k", "tokens_per_call": 1354,
+     "benchmark": "GSM8K", "model": "DeepSeek V4 Flash", "tables": ["T2", "T5"],
+     "expected": {"agrapa": [6, 3], "mixture": [6, 3], "returned": "cand_1",
+                  "tokens_to_alarm_M": 1.79, "tokens_full_M": 5.18, "tokens_saved_pct": 65.5},
+     "test": {"note": "only summaries exist (runs/gepa_gsm8k_test_results.json): seed cand_0 97.2, cand_5 97.2. The returned artifact cand_1 was not evaluated."},
+     "paper_reported": {"test_baseline_acc": 84.00, "test_returned_acc": 97.20}}
+  ],
+  "sensitivity_T7": {
+    "_doc": "Table 7, aGRAPA, cell = T_alarm/nu_hat, '-' = no alarm. Rows eps, columns delta. Matches the paper exactly.",
+    "eps": [0.002, 0.005, 0.01, 0.02, 0.05],
+    "delta": [0.01, 0.05, 0.10],
+    "grids": {
+      "skillopt_searchqa_deepseek": [["10/2", "4/2", "4/2"], ["5/2", "4/2", "4/2"], ["4/2", "4/2", "3/2"], ["4/2", "3/2", "3/2"], ["3/2", "3/2", "3/2"]],
+      "skillopt_gsm8k_deepseek":    [["8/2", "7/2", "5/2"], ["7/2", "5/2", "5/2"], ["5/2", "4/2", "4/2"], ["4/2", "3/2", "3/2"], ["3/2", "3/2", "3/2"]],
+      "skillopt_livemath_deepseek": [["-", "12/2", "8/2"], ["-", "12/2", "7/2"], ["-", "8/2", "7/2"], ["12/2", "7/2", "6/2"], ["8/2", "6/2", "5/2"]],
+      "skillopt_officeqa_deepseek": [["9/5", "8/5", "7/5"], ["9/5", "8/5", "7/5"], ["9/5", "8/5", "7/5"], ["9/5", "8/5", "7/5"], ["8/4", "6/4", "6/4"]]
+    }
+  }
+}

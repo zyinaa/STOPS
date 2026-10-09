@@ -1,0 +1,153 @@
+diff --git a/skillopt/engine/trainer.py b/skillopt/engine/trainer.py
+index a0de43b..5aabc2a 100644
+--- a/skillopt/engine/trainer.py
++++ b/skillopt/engine/trainer.py
+@@ -63,6 +63,11 @@ from skillopt.model import (
+ )
+ from skillopt.utils import compute_score, skill_hash
+ 
++try:  # optional: stopping and output selection (see integrations/skillopt/README.md)
++    from stops.integrations.skillopt import SkillOptHook
++except ImportError:  # pragma: no cover
++    SkillOptHook = None
++
+ 
+ # ── Patch normalization ───────────────────────────────────────────────────────
+ 
+@@ -380,6 +385,26 @@ def _compute_task_type_buckets(results: list[dict], task_types: list[str]) -> di
+     return buckets
+ 
+ 
++def _extract_per_item_outcomes(results: list[dict]) -> dict[str, dict]:
++    """Extract per-item paired outcomes from a rollout results list.
++
++    Returns a dict mapping item_id -> {hard, soft, predicted_answer, gold_answers}.
++    Used for paired statistical analysis (McNemar, p_TP, p_FP estimation).
++    """
++    per_item = {}
++    for r in results:
++        item_id = str(r.get("id", ""))
++        if not item_id:
++            continue
++        per_item[item_id] = {
++            "hard": float(r.get("hard", 0)),
++            "soft": float(r.get("soft", 0.0)),
++            "predicted_answer": r.get("predicted_answer", ""),
++            "gold_answers": r.get("gold_answers", []),
++            "fail_reason": r.get("fail_reason", ""),
++        }
++    return per_item
++
+ def _format_rejection_buffer(buffer: list[dict]) -> str:
+     """**DEPRECATED** — kept for backward compat; use _format_step_buffer."""
+     return _format_step_buffer(buffer)
+@@ -857,6 +882,13 @@ class ReflACTTrainer:
+ 
+         # ── Selection cache ──────────────────────────────────────────────
+         sel_cache: dict[str, tuple[float, float]] = {}
++        sel_per_item_cache: dict[str, dict[str, dict]] = {}
++        current_eval_hash: str = ""
++        stops_hook = None
++        if (cfg.get("stops") or {}).get("enabled"):
++            if SkillOptHook is None:
++                raise ImportError("config has stops.enabled but the stops package is not installed")
++            stops_hook = SkillOptHook(cfg, out_root)
+         for rec in history:
+             sh = rec.get("candidate_hash", "")
+             if sh and rec.get("selection_hard") is not None:
+@@ -916,6 +948,8 @@ class ReflACTTrainer:
+             best_score = current_score
+             sh = skill_hash(skill_init)
+             sel_cache[sh] = (baseline_hard, baseline_soft)
++            sel_per_item_cache[sh] = _extract_per_item_outcomes(baseline_results)
++            current_eval_hash = sh
+             current_origin = "initial_skill"
+             best_origin = "initial_skill"
+             _persist_runtime_state(0)
+@@ -1330,7 +1364,45 @@ class ReflACTTrainer:
+                     sel_results = adapter.rollout(sel_env, candidate_skill, sel_eval_dir)
+                     cand_hard, cand_soft = compute_score(sel_results)
+                     sel_cache[cand_hash] = (cand_hard, cand_soft)
++                    sel_per_item_cache[cand_hash] = _extract_per_item_outcomes(sel_results)
+ 
++                # Persist per-item paired outcomes for RQ-A analysis
++                if (
++                    stops_hook is not None
++                    and stops_hook.refresh_baseline
++                    and skill_hash(current_skill) != current_eval_hash
++                ):
++                    # The incumbent changed without a selection eval (slow update):
++                    # evaluate it once so the paired baseline is theta_{t-1}.
++                    _inc_hash = skill_hash(current_skill)
++                    if _inc_hash not in sel_per_item_cache:
++                        _inc_env, _ = _build_eval_env(
++                            split="valid_seen", env_num=cfg["sel_env_num"], seed=seed,
++                        )
++                        _inc_results = adapter.rollout(
++                            _inc_env, current_skill,
++                            os.path.join(step_dir, "selection_eval_incumbent"),
++                        )
++                        sel_per_item_cache[_inc_hash] = _extract_per_item_outcomes(_inc_results)
++                    current_eval_hash = _inc_hash
++                    step_rec["stops_baseline_refreshed"] = True
++                baseline_hash = current_eval_hash
++                paired_outcomes = {
++                        "step": global_step,
++                        "candidate_hash": cand_hash,
++                        "baseline_hash": baseline_hash,
++                        "baseline_per_item": sel_per_item_cache.get(baseline_hash, {}),
++                        "candidate_per_item": sel_per_item_cache.get(cand_hash, {}),
++                    }
++                with open(os.path.join(step_dir, "paired_outcomes.json"), "w") as f:
++                        json.dump(paired_outcomes, f, indent=2, ensure_ascii=False)
++                if stops_hook is not None:
++                    stops_hook.on_round(
++                        global_step,
++                        paired_outcomes["baseline_per_item"],
++                        paired_outcomes["candidate_per_item"],
++                        current_skill,
++                    )
+                 step_rec["selection_hard"] = cand_hard
+                 step_rec["selection_soft"] = cand_soft
+ 
+@@ -1362,6 +1434,7 @@ class ReflACTTrainer:
+                 best_step = gate.best_step
+                 if gate.action in {"accept", "accept_new_best"}:
+                     current_origin = f"step_{global_step:04d}"
++                    current_eval_hash = cand_hash
+                 if gate.action == "accept_new_best":
+                     best_origin = current_origin
+ 
+@@ -1460,6 +1533,9 @@ class ReflACTTrainer:
+                 _persist_runtime_state(global_step)
+                 with open(os.path.join(step_dir, "step_record.json"), "w") as f:
+                     json.dump(step_rec, f, indent=2, ensure_ascii=False)
++                if stops_hook is not None and stops_hook.should_stop:
++                    print(f"\n  [stops] stopping after step {global_step}")
++                    break
+ 
+                 timing = step_rec["timing"]
+                 print(
+@@ -1474,6 +1550,9 @@ class ReflACTTrainer:
+                     f"evaluate={timing.get('evaluate_s',0)}s"
+                 )
+ 
++            if stops_hook is not None and stops_hook.should_stop:
++                break  # skip this epoch's slow/meta update and all later epochs
++
+             epoch_last_step_skill = current_skill
+             epoch_comparison_pairs: list[dict] | None = None
+ 
+@@ -1908,6 +1987,12 @@ class ReflACTTrainer:
+                     with open(meta_skill_done_path, "w") as f:
+                         json.dump(meta_skill_result, f, indent=2, ensure_ascii=False)
+ 
++        if stops_hook is not None:
++            stops_result = stops_hook.finalize()
++            if stops_hook.should_stop and stops_hook.cfg["replace_best"]:
++                best_skill = stops_hook.selected_skill()
++                best_origin = f"stops_selected:{stops_result['selected']}"
++
+         # ── Save best skill ──────────────────────────────────────────────
+         with open(os.path.join(out_root, "best_skill.md"), "w") as f:
+             f.write(best_skill)

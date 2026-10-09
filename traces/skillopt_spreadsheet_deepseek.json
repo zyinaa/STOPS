@@ -1,0 +1,317 @@
+{
+ "schema": "stops.trace/v1",
+ "meta": {
+  "name": "skillopt_spreadsheet_deepseek",
+  "system": "skillopt",
+  "run": "spreadsheetbench_deepseek",
+  "benchmark": "SpreadsheetBench",
+  "model": "DeepSeek V4 Flash",
+  "n_items": 40,
+  "budget": 16,
+  "steps_per_epoch": 2,
+  "use_slow_update": true,
+  "slow_update_gate_with_selection": false,
+  "artifact_paths": {
+   "initial": "the run's initial skill",
+   "step_XXXX": "steps/step_XXXX/candidate_skill.md"
+  }
+ },
+ "steps": [
+  {
+   "step": 1,
+   "epoch": 1,
+   "action": "reject",
+   "tokens": 10975869,
+   "evaluated": true,
+   "n_up": 3,
+   "n_down": 6,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "initial",
+   "incumbent_file": "initial",
+   "candidate": "step_0001",
+   "candidate_score": 0.3,
+   "incumbent_score": 0.375,
+   "flags": []
+  },
+  {
+   "step": 2,
+   "epoch": 1,
+   "action": "reject",
+   "tokens": 9979347,
+   "evaluated": true,
+   "n_up": 4,
+   "n_down": 5,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "initial",
+   "incumbent_file": "skills/skill_v0001.md",
+   "candidate": "step_0002",
+   "candidate_score": 0.35,
+   "incumbent_score": 0.375,
+   "flags": []
+  },
+  {
+   "step": 3,
+   "epoch": 2,
+   "action": "accept_new_best",
+   "tokens": 5639904,
+   "evaluated": true,
+   "n_up": 10,
+   "n_down": 4,
+   "n": 40,
+   "accepted": true,
+   "incumbent": "initial",
+   "incumbent_file": "skills/skill_v0002.md",
+   "candidate": "step_0003",
+   "candidate_score": 0.525,
+   "incumbent_score": 0.525,
+   "flags": []
+  },
+  {
+   "step": 4,
+   "epoch": 2,
+   "action": "reject",
+   "tokens": 8694051,
+   "evaluated": true,
+   "n_up": 4,
+   "n_down": 5,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0003",
+   "incumbent_file": "skills/skill_v0003.md",
+   "candidate": "step_0004",
+   "candidate_score": 0.5,
+   "incumbent_score": 0.525,
+   "flags": []
+  },
+  {
+   "step": 5,
+   "epoch": 3,
+   "action": "accept_new_best",
+   "tokens": 5858471,
+   "evaluated": true,
+   "n_up": 7,
+   "n_down": 3,
+   "n": 40,
+   "accepted": true,
+   "incumbent": "step_0003",
+   "incumbent_file": "skills/skill_v0004.md",
+   "candidate": "step_0005",
+   "candidate_score": 0.625,
+   "incumbent_score": 0.625,
+   "flags": [
+    "baseline_possibly_stale"
+   ]
+  },
+  {
+   "step": 6,
+   "epoch": 3,
+   "action": "reject",
+   "tokens": 6209143,
+   "evaluated": true,
+   "n_up": 2,
+   "n_down": 5,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0005",
+   "incumbent_file": "skills/skill_v0005.md",
+   "candidate": "step_0006",
+   "candidate_score": 0.55,
+   "incumbent_score": 0.625,
+   "flags": []
+  },
+  {
+   "step": 7,
+   "epoch": 4,
+   "action": "reject",
+   "tokens": 5624703,
+   "evaluated": true,
+   "n_up": 1,
+   "n_down": 7,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0005",
+   "incumbent_file": "skills/skill_v0006.md",
+   "candidate": "step_0007",
+   "candidate_score": 0.475,
+   "incumbent_score": 0.625,
+   "flags": [
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 8,
+   "epoch": 4,
+   "action": "reject",
+   "tokens": 9171843,
+   "evaluated": true,
+   "n_up": 5,
+   "n_down": 6,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0005",
+   "incumbent_file": "skills/skill_v0007.md",
+   "candidate": "step_0008",
+   "candidate_score": 0.6,
+   "incumbent_score": 0.625,
+   "flags": [
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 9,
+   "epoch": 5,
+   "action": "accept_new_best",
+   "tokens": 4151673,
+   "evaluated": true,
+   "n_up": 5,
+   "n_down": 3,
+   "n": 40,
+   "accepted": true,
+   "incumbent": "step_0005",
+   "incumbent_file": "skills/skill_v0008.md",
+   "candidate": "step_0009",
+   "candidate_score": 0.675,
+   "incumbent_score": 0.675,
+   "flags": [
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 10,
+   "epoch": 5,
+   "action": "skip_no_patches",
+   "tokens": 0,
+   "evaluated": false,
+   "accepted": false,
+   "incumbent": "step_0009",
+   "incumbent_file": "skills/skill_v0009.md",
+   "candidate": "step_0010",
+   "candidate_score": null,
+   "incumbent_score": 0.675,
+   "flags": [
+    "no_candidate"
+   ]
+  },
+  {
+   "step": 11,
+   "epoch": 6,
+   "action": "accept_new_best",
+   "tokens": 9920661,
+   "evaluated": true,
+   "n_up": 6,
+   "n_down": 5,
+   "n": 40,
+   "accepted": true,
+   "incumbent": "step_0009",
+   "incumbent_file": "skills/skill_v0010.md",
+   "candidate": "step_0011",
+   "candidate_score": 0.7,
+   "incumbent_score": 0.7,
+   "flags": [
+    "baseline_possibly_stale"
+   ]
+  },
+  {
+   "step": 12,
+   "epoch": 6,
+   "action": "reject",
+   "tokens": 5356384,
+   "evaluated": true,
+   "n_up": 2,
+   "n_down": 4,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0011",
+   "incumbent_file": "skills/skill_v0011.md",
+   "candidate": "step_0012",
+   "candidate_score": 0.65,
+   "incumbent_score": 0.7,
+   "flags": []
+  },
+  {
+   "step": 13,
+   "epoch": 7,
+   "action": "reject",
+   "tokens": 9210464,
+   "evaluated": true,
+   "n_up": 2,
+   "n_down": 2,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0011",
+   "incumbent_file": "skills/skill_v0012.md",
+   "candidate": "step_0013",
+   "candidate_score": 0.7,
+   "incumbent_score": 0.7,
+   "flags": [
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 14,
+   "epoch": 7,
+   "action": "reject",
+   "tokens": 6397898,
+   "evaluated": true,
+   "n_up": 4,
+   "n_down": 5,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0011",
+   "incumbent_file": "skills/skill_v0013.md",
+   "candidate": "step_0014",
+   "candidate_score": 0.675,
+   "incumbent_score": 0.7,
+   "flags": [
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 15,
+   "epoch": 8,
+   "action": "reject",
+   "tokens": 11633959,
+   "evaluated": true,
+   "n_up": 0,
+   "n_down": 0,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0011",
+   "incumbent_file": "skills/skill_v0014.md",
+   "candidate": "step_0015",
+   "candidate_score": 0.625,
+   "incumbent_score": 0.7,
+   "flags": [
+    "missing_pairs",
+    "baseline_stale"
+   ]
+  },
+  {
+   "step": 16,
+   "epoch": 8,
+   "action": "reject",
+   "tokens": 7409517,
+   "evaluated": true,
+   "n_up": 0,
+   "n_down": 0,
+   "n": 40,
+   "accepted": false,
+   "incumbent": "step_0011",
+   "incumbent_file": "skills/skill_v0015.md",
+   "candidate": "step_0016",
+   "candidate_score": 0.675,
+   "incumbent_score": 0.7,
+   "flags": [
+    "missing_pairs",
+    "baseline_stale"
+   ]
+  }
+ ],
+ "full_run": {
+  "artifact": "best_skill.md",
+  "best_origin": "step_0011",
+  "tokens": 116233887
+ }
+}

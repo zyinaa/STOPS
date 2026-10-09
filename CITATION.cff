@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper."
+title: "STOPS: Sequential Tests for Online stopping and Plateau-based Selection"
+authors:
+  - family-names: Yin
+    given-names: Enoch
+  - family-names: Liu
+    given-names: Bin
+  - family-names: Qi
+    given-names: Zhengling
+license: MIT
+preferred-citation:
+  type: article
+  title: "When Is Enough Enough in Self-Evolving LLM Systems?"
+  authors:
+    - family-names: Yin
+      given-names: Enoch
+    - family-names: Liu
+      given-names: Bin
+    - family-names: Qi
+      given-names: Zhengling
+  year: 2026

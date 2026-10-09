@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stops"
+version = "0.1.0"
+description = "STOPS: Sequential Tests for Online stopping and Plateau-based Selection in self-evolving LLM systems."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Enoch Yin" },
+  { name = "Bin Liu" },
+  { name = "Zhengling Qi" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.5"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+stops = "stops.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
