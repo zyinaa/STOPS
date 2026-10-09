@@ -3,7 +3,7 @@
 When to stop a self-evolving LLM loop, and which artifact to return.
 
 Reference implementation of "When Is Enough Enough in Self-Evolving LLM Systems?"
-(Yin, Liu, Qi).
+(Yin, Liu, Qi), arXiv:2610.04756.
 """
 
 from .betting import AGRAPA, FixedMixture

@@ -2,8 +2,10 @@
 
 **When to stop a self-evolving LLM loop, and which artifact to return.**
 
-Reference implementation of *When Is Enough Enough in Self-Evolving LLM Systems?*
+Reference implementation of [*When Is Enough Enough in Self-Evolving LLM Systems?*](https://arxiv.org/abs/2610.04756)
 (Enoch Yin, Bin Liu, Zhengling Qi).
+
+[![arXiv](https://img.shields.io/badge/arXiv-2610.04756-b31b1b.svg)](https://arxiv.org/abs/2610.04756)
 
 Self-evolving systems (SkillOpt, GEPA, and others) repeatedly propose an update to
 a prompt or skill, score it against the current one on a validation set, and keep
@@ -118,9 +120,11 @@ docs/conventions.md how runs become rounds (skips, missing pairs, slow updates)
 
 ```bibtex
 @article{yin2026enough,
-  title  = {When Is Enough Enough in Self-Evolving {LLM} Systems?},
-  author = {Yin, Enoch and Liu, Bin and Qi, Zhengling},
-  year   = {2026}
+  title   = {When Is Enough Enough in Self-Evolving {LLM} Systems?},
+  author  = {Yin, Enoch and Liu, Bin and Qi, Zhengling},
+  journal = {arXiv preprint arXiv:2610.04756},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2610.04756}
 }
 ```
 

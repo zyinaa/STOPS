@@ -20,3 +20,7 @@ preferred-citation:
     - family-names: Qi
       given-names: Zhengling
   year: 2026
+  identifiers:
+    - type: other
+      value: "arXiv:2610.04756"
+  url: "https://arxiv.org/abs/2610.04756"
